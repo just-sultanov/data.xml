@@ -63,6 +63,13 @@
                                                     "there")))]
   (is (= expected (lazy-parse* input)))))
 
+(deftest test-entity-reference-parse
+(let [input "<!DOCTYPE foo [<!ENTITY copy \"&#169;\">]><entity-reference><is><here>&copy;</here></is></entity-reference>"
+      expected (element :entity-reference {} 
+                        (element :is {}
+                                 (element :here {} "©")))]
+  (is (= expected (lazy-parse* input)))))
+
 (deftest test-parsing-processing-instructions
   (let [input "<?xml version=\"1.0\" encoding=\"utf-8\"?>
                 <?xml-stylesheet type='text/xsl' href='someFile.xsl'?>

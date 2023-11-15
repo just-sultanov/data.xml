@@ -12,10 +12,10 @@
   (:require [clojure.data.xml.protocols :refer
              [EventGeneration gen-event next-events xml-str]]
             [clojure.data.xml.name :refer [separate-xmlns]]
-            [clojure.data.xml.node :refer [element* cdata xml-comment]]
+            [clojure.data.xml.node :refer [element* cdata xml-comment entity-reference]]
             [clojure.data.xml.impl :refer [extend-protocol-fns compile-if]]
             [clojure.data.xml.pu-map :as pu])
-  (:import (clojure.data.xml.node Element CData Comment)
+  (:import (clojure.data.xml.node Element CData Comment EntityReference)
            (clojure.lang Sequential IPersistentMap Keyword)
            (java.net URI URL)
            (java.util Date)
@@ -36,6 +36,7 @@
 (defrecord CharsEvent [str])
 (defrecord CDataEvent [str])
 (defrecord CommentEvent [str])
+(defrecord EntityReferenceEvent [ref])
 (defrecord QNameEvent [qn])
 
 ;; EndElementEvent doesn't have any data, so make it a singleton
@@ -74,6 +75,9 @@
    Comment
    {:gen-event (comp ->CommentEvent :content)
     :next-events second-arg}
+   EntityReference
+   {:gen-event (comp ->EntityReferenceEvent :ref)
+    :next-events second-arg}
    (IPersistentMap Element) elem-event-generation)
   (compile-if
    (Class/forName "java.time.Instant")
@@ -107,6 +111,7 @@
     (instance? CharsEvent event) (:str event)
     (instance? CDataEvent event) (cdata (:str event))
     (instance? CommentEvent event) (xml-comment (:str event))
+    (instance? EntityReference event) (entity-reference (:ref event))
     :else (throw (ex-info "Illegal argument, not an event object" {:event event}))))
 
 (defn event-exit? [event]

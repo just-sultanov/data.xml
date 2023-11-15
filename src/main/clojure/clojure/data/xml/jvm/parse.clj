@@ -10,7 +10,7 @@
   (:require [clojure.string :as str]
             [clojure.data.xml.event :refer
              [->StartElementEvent ->EmptyElementEvent ->EndElementEvent
-              ->CharsEvent ->CDataEvent ->CommentEvent]]
+              ->CharsEvent ->CDataEvent ->CommentEvent ->EntityReferenceEvent]]
             [clojure.data.xml.impl :refer
              [static-case]]
             [clojure.data.xml.name :refer
@@ -108,6 +108,11 @@
          XMLStreamConstants/COMMENT
          (if (include-node? :comment)
            (cons (->CommentEvent (.getText sreader))
+                 (pull-seq sreader opts ns-envs))
+           (recur))
+         XMLStreamConstants/ENTITY_REFERENCE
+         (if (include-node? :entity-reference)
+           (cons (->EntityReferenceEvent (.getLocalName sreader))
                  (pull-seq sreader opts ns-envs))
            (recur))
          XMLStreamConstants/END_DOCUMENT

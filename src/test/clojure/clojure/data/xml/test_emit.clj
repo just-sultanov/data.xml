@@ -136,6 +136,12 @@
                                 (xml-comment " goes here ")
                                 " not here")))))
 
+(deftest emitting-entity-reference
+  (is (= (str "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+              "<entity-reference-stuff>&copy;</entity-reference-stuff>")
+         (emit-str (element :entity-reference-stuff {} 
+                            (entity-reference "copy"))))))
+
 (deftest test-indent
   (let [nested-xml (lazy-parse* (str "<a><b><c><d>foo</d></c></b></a>"))
         expect (-> "<a>\n  <b>\n    <c>\n      <d>foo</d>\n    </c>\n  </b>\n</a>\n"

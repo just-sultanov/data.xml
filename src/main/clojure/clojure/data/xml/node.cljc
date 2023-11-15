@@ -181,6 +181,7 @@
 
 (defrecord CData [content])
 (defrecord Comment [content])
+(defrecord EntityReference [ref])
 
 (defn element*
   "Create an xml element from a content collection and optional metadata"
@@ -213,6 +214,11 @@
   "Create a Comment node"
   [content]
   (Comment. content))
+
+(defn entity-reference
+  "Create an Entity Reference node"
+  [ref]
+  (EntityReference. ref))
 
 (defn map->Element [{:keys [tag attrs content] :as el}]
   (element* tag attrs content (meta el)))

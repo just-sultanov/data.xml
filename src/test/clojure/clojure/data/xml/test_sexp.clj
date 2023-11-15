@@ -62,3 +62,11 @@
         sexp-input [:tag {:attr "value"} [:body {} [:-comment "comment <stuff<here<"]]]]
     (is (= xml-input
            (sexp-as-element sexp-input)))))
+
+(deftest with-entity-reference
+  (let [xml-input (element :tag {:attr "value"}
+                           (element :body {} (entity-reference "copy")))
+        sexp-input [:tag {:attr "value"} [:body {} [:-entity-reference "copy"]]]]
+    (is (= xml-input
+           (sexp-as-element sexp-input)))))
+

@@ -9,12 +9,13 @@
 (ns clojure.data.xml.prxml
   (:require
    [clojure.data.xml.protocols :refer [AsElements as-elements]]
-   [clojure.data.xml.node :refer [cdata xml-comment element* element]]))
+   [clojure.data.xml.node :refer [cdata xml-comment entity-reference element* element]]))
 
 (defn sexp-element [tag attrs child]
   (cond
     (= :-cdata tag) (cdata (first child))
     (= :-comment tag) (xml-comment (first child))
+    (= :-entity-reference tag) (entity-reference (first child))
     :else (element* tag attrs (mapcat as-elements child))))
 
 (extend-protocol AsElements

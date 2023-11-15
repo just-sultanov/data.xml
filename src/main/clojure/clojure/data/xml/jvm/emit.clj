@@ -23,7 +23,7 @@
            (javax.xml.stream XMLStreamWriter XMLOutputFactory)
            (javax.xml.transform OutputKeys Transformer
                                 TransformerFactory)
-           (clojure.data.xml.event StartElementEvent EmptyElementEvent EndElementEvent CharsEvent CDataEvent CommentEvent QNameEvent)
+           (clojure.data.xml.event StartElementEvent EmptyElementEvent EndElementEvent CharsEvent CDataEvent CommentEvent EntityReferenceEvent QNameEvent)
            (clojure.lang BigInt)
            (java.net URI URL)
            (java.util Date)
@@ -153,6 +153,8 @@
   (emit-event [{:keys [str]} writer s] (emit-cdata str writer) s)
   CommentEvent
   (emit-event [{:keys [str]} writer s] (.writeComment ^XMLStreamWriter writer str) s)
+  EntityReferenceEvent
+  (emit-event [{:keys [ref]} writer s] (.writeEntityRef ^XMLStreamWriter writer ref) s)
   QNameEvent
   (emit-event [{:keys [qn]} ^XMLStreamWriter writer pu-stack]
     (.writeCharacters writer (prefix-for qn (first pu-stack)))
